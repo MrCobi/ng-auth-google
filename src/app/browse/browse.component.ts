@@ -8,19 +8,20 @@ import { AuthService } from '../auth.service';
 })
 export class BrowseComponent implements OnInit {
   auth = inject(AuthService);
-  name = JSON.parse(sessionStorage.getItem('loggedInUser')!).name;
-  userProfileimg = JSON.parse(sessionStorage.getItem('loggedInUser')!).picture;
-  email = JSON.parse(sessionStorage.getItem('loggedInUser')!).email;
-  phone = JSON.parse(sessionStorage.getItem('loggedInUser')!).phone;
-  address = JSON.parse(sessionStorage.getItem('loggedInUser')!).address;
+  userData = JSON.parse(sessionStorage.getItem('loggedInUser')!);
+  name = this.userData.name;
+  givenName = this.userData.given_name;
+  familyName = this.userData.family_name;
+  userProfileimg = this.userData.picture;
+  email = this.userData.email;
+  emailVerified = this.userData.email_verified;
+  
   constructor() { }
 
-  ngOnInit() {
-  }
+  ngOnInit() { }
 
   signOut() {
     sessionStorage.removeItem('loggedInUser');
     this.auth.signOut();
   }
-
 }

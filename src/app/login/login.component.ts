@@ -23,11 +23,13 @@ export class LoginComponent implements OnInit {
     });
 
     google.accounts.id.renderButton(document.getElementById('google-btn'), {
-      theme: 'filled_blue',
+      theme: 'outline',
       size: 'large',
-      shape: 'rectangle',
-      width: 350
-    })
+      shape: 'pill',
+      width: 280,
+      logo_alignment: 'center',
+      text: 'continue_with'
+    });
   }
 
   private decodetoken(token: string) {
@@ -36,13 +38,9 @@ export class LoginComponent implements OnInit {
 
   handleLogin(response: any) {
     if (response) {
-      //decode token
-      const payload = this.decodetoken(response.credential); 
-      //guardarla en sesion
+      const payload = this.decodetoken(response.credential);
       sessionStorage.setItem('loggedInUser', JSON.stringify(payload));
-      //navegar a home/
       this.router.navigate(['browse']);
     }
   }
-
 }
