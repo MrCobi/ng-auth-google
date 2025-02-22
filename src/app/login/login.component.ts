@@ -2,6 +2,7 @@ declare var google: any;
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-login',
@@ -10,9 +11,11 @@ import { Router } from '@angular/router';
   imports: [CommonModule],
   standalone: true
 })
+
+
 export class LoginComponent implements OnInit {
   private router = inject(Router);
-  constructor() { }
+  constructor(private userService: UserService) { }
 
   ngOnInit(): void {
     google.accounts.id.initialize({
@@ -41,6 +44,21 @@ export class LoginComponent implements OnInit {
       const payload = this.decodetoken(response.credential);
       sessionStorage.setItem('loggedInUser', JSON.stringify(payload));
       this.router.navigate(['browse']);
+
+      // Enviar los datos del usuario al backend
+      this.userService.createUsuario(payload).subscribe({
+        next: (res) => {
+          console.log('✅ Usuario autenticado/registrado', res);
+          sessionStorage.setItem('loggedInUser', JSON.stringify(res));
+          this.router.navigate(['browse']); // ✅ Redirige después del login
+        },
+        error: (err) => {
+          console.error('❌ Error al guardar/autenticar el usuario', err);
+          alert('Hubo un problema con el login.');
+        }
+      });
+
+
     }
   }
 }
