@@ -11,8 +11,6 @@ import { UserService } from '../user.service';
   imports: [CommonModule],
   standalone: true
 })
-
-
 export class LoginComponent implements OnInit {
   private router = inject(Router);
   constructor(private userService: UserService) { }
@@ -35,30 +33,49 @@ export class LoginComponent implements OnInit {
     });
   }
 
+  /**
+   * Decodifica el token JWT y mapea los campos de snake_case a camelCase.
+   *
+   * @param token El token JWT.
+   * @returns Un objeto con los datos del usuario en camelCase.
+   */
   private decodetoken(token: string) {
-    return JSON.parse(atob(token.split('.')[1]));
+    const rawPayload = JSON.parse(atob(token.split('.')[1]));
+    return {
+      ...rawPayload,
+      emailVerified: rawPayload.email_verified, // Mapear snake_case a camelCase
+      familyName: rawPayload.family_name || null,
+      givenName: rawPayload.given_name || null,
+      sub: rawPayload.sub,
+      picture: rawPayload.picture,
+      name: rawPayload.name
+    };
   }
 
+  /**
+   * Maneja la respuesta de inicio de sesión de Google.
+   *
+   * @param response La respuesta de Google con el token JWT.
+   */
   handleLogin(response: any) {
     if (response) {
-      const payload = this.decodetoken(response.credential);
-      sessionStorage.setItem('loggedInUser', JSON.stringify(payload));
-      this.router.navigate(['browse']);
+      const payload = this.decodetoken(response.credential); // Decodificar y mapear el token
+      sessionStorage.setItem('token', JSON.stringify(payload)); // Guardar token en sessionStorage
 
-      // Enviar los datos del usuario al backend
       this.userService.createUsuario(payload).subscribe({
-        next: (res) => {
-          console.log('✅ Usuario autenticado/registrado', res);
-          sessionStorage.setItem('loggedInUser', JSON.stringify(res));
-          this.router.navigate(['browse']); // ✅ Redirige después del login
+        next: (res: any) => {
+          // Almacenar datos del usuario y el estado existingUser
+          sessionStorage.setItem('loggedInUser', JSON.stringify({
+            ...res.user,
+            existingUser: res.existingUser // Agregar esta propiedad
+          }));
+          this.router.navigate(['browse']);
         },
         error: (err) => {
-          console.error('❌ Error al guardar/autenticar el usuario', err);
+          console.error('❌ Error al autenticar el usuario:', err);
           alert('Hubo un problema con el login.');
         }
       });
-
-
     }
   }
 }

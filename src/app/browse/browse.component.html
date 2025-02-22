@@ -29,6 +29,14 @@
             </svg>
             }
           </div>
+
+          <!-- Agrega esto debajo de la sección "Verified Badge" -->
+          <div class="mt-4 text-center">
+            <div class="inline-block px-4 py-2 rounded-lg"
+              [ngClass]="existingUser ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'">
+              {{ statusMessage }}
+            </div>
+          </div>
         </div>
 
         <!-- Stats -->

@@ -3,27 +3,41 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root' // Correctamente proporcionado en 'root'
+  providedIn: 'root'
 })
 export class UserService {
-  private apiUrl = 'http://localhost:8086/usuario'; // URL del backend en el puerto 8086
+  private apiUrl = 'http://localhost:8086/usuario'; // URL del backend
 
   constructor(private http: HttpClient) {}
 
-  // Método para obtener un usuario por email
+  /**
+   * Obtiene un usuario por su email.
+   *
+   * @param email El email del usuario.
+   * @returns Un Observable con la respuesta del backend.
+   */
   getUsuarioByEmail(email: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/byemail/${email}`);
   }
 
-  // Método para obtener un usuario por ID
+  /**
+   * Obtiene un usuario por su ID.
+   *
+   * @param id El ID del usuario.
+   * @returns Un Observable con la respuesta del backend.
+   */
   getUsuarioById(id: number): Observable<any> {
     return this.http.get(`${this.apiUrl}/${id}`);
   }
 
-  // Método para crear un nuevo usuario
+  /**
+   * Crea un nuevo usuario.
+   *
+   * @param usuario Los datos del usuario.
+   * @returns Un Observable con la respuesta del backend.
+   */
   createUsuario(usuario: any): Observable<any> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    console.log(`${this.apiUrl}/new`);	
     return this.http.post(`${this.apiUrl}/new`, usuario, { headers });
   }
 }

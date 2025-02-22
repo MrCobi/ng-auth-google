@@ -6,12 +6,12 @@ import { Router } from '@angular/router';
   providedIn: 'root'
 })
 export class AuthService {
-router = inject(Router)
-constructor() { }
+  router = inject(Router)
+  constructor() { }
 
-signOut() {
-google.accounts.id.disableAutoSelect();
-this.router.navigate(['/']);
-}
+  signOut() {
+    google.accounts.id.disableAutoSelect();
+    this.router.navigate(['/']);
+  }
 
 }
