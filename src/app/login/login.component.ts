@@ -60,7 +60,6 @@ export class LoginComponent implements OnInit {
   handleLogin(response: any) {
     if (response) {
       const payload = this.decodetoken(response.credential); // Decodificar y mapear el token
-      sessionStorage.setItem('token', JSON.stringify(payload)); // Guardar token en sessionStorage
 
       this.userService.createUsuario(payload).subscribe({
         next: (res: any) => {
